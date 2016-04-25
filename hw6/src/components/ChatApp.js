@@ -10,6 +10,9 @@ class ChatApp extends Component {
                    current_user: 0
                  };
   }
+  static contextTypes = {
+    router: PropTypes.object.isRequired
+  };
   _handleKeyPress(event){
     if (event.key === 'Enter' && event.target.value != '') {
       var mes = event.target.value;
@@ -29,6 +32,10 @@ class ChatApp extends Component {
       current_user: i
     });
   }
+  handleClick() {
+    this.context.router.push('/users:'+this.state.users[this.state.current_user].name);
+
+  }
   render() {
     // html -> jsx
     return(
@@ -45,7 +52,7 @@ class ChatApp extends Component {
 		</div>
 		<div className="chat-app_right">
 			<div className="heading">
-				<div className="current-target">
+				<div className="current-target" onClick={this.handleClick.bind(this)}>
           {this.state.users[this.state.current_user].name}
         </div>
 			</div>

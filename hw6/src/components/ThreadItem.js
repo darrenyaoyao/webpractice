@@ -1,6 +1,5 @@
 import React, { Component, PropTypes } from 'react';
 
-
 class ThreadItem extends Component {
   lastmessage(){
     var message_len = this.props.user.messages.length;
