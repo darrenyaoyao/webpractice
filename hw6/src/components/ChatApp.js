@@ -33,7 +33,7 @@ class ChatApp extends Component {
     });
   }
   handleClick() {
-    this.context.router.push('/users:'+this.state.users[this.state.current_user].name);
+    this.context.router.push(`/users/${this.state.users[this.state.current_user].name}`);
 
   }
   render() {

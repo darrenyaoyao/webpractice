@@ -11,8 +11,8 @@ render(
   <Router history={browserHistory}>
     <Route path="/" component={Home}/>
     <Route path="chat" component={ChatApp}/>
-    <Route path="users" component={Users}>
+    <Route path="users">
     	<Route path=":userId" component={User}/>
-  	</Route>
+    </Route>
   </Router>
   , document.getElementById('root'));
