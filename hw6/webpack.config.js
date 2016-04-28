@@ -6,7 +6,7 @@ module.exports = {
         entry: './src/index',  // 進入點
         output: {
             path: path.join(__dirname, 'dist'),
-			filename: 'bundle.js',  // 輸出的檔案名稱
+			      filename: 'bundle.js',  // 輸出的檔案名稱
         },
 	module: {
     	loaders: [{
