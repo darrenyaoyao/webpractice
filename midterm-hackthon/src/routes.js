@@ -8,8 +8,8 @@ import NotFoundPage from './components/NotFoundPage';
 export default (
   <Route path="/">
     <IndexRedirect to="/question" />
-    <Route path="/question" component={Question}>
-    <Route path="/answerlist" component={Answerlist}>
+    <Route path="/question" component={Question}/>
+    <Route path="/answerlist" component={Answerlist}/>
     <Route path="*" component={NotFoundPage} />
   </Route>
 );
