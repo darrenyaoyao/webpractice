@@ -15,9 +15,12 @@ class Status extends Component {
     var feedback;
     if(this.props.correct){
       feedback = "答對了！"
+    }else if (this.props.timeout) {
+      feedback = "時間到了！"
     }else{
       feedback = "答錯了！"
     }
+
     return (
       <div>
         <h3>{feedback}</h3>
@@ -27,10 +30,12 @@ class Status extends Component {
 }
 
 Status.defaultProps = {
-  correct: false
+  correct: false,
+  timeout: false
 };
 
 Status.propTypes = {
-  correct: React.PropTypes.bool
+  correct: React.PropTypes.bool,
+  timeout: React.PropTypes.bool
 };
 export default Status;

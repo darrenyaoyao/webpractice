@@ -5,6 +5,7 @@ import {RaisedButton} from 'material-ui';
 import {Checkbox} from 'material-ui';
 import {Grid, Row, Col} from 'react-flexbox-grid';
 import Status from './Status';
+import Timecounter from './Timecounter';
 
 import './Question.css';
 
@@ -15,7 +16,8 @@ class Question extends Component {
       question_element: {},
       user_answer: [false, false, false, false, false],
       answered: false,
-      correct: false
+      correct: false,
+      timeout: false,
     };
     this.setQuestion = this.setQuestion.bind(this);
   }
@@ -30,6 +32,7 @@ class Question extends Component {
         throw res.status;
       return res.json();
     }).then(this.setQuestion);
+    this.setState({answered: false, user_answer: [false, false, false, false, false], timeout: false});
   }
 
   handleChange(answer, e, bool){
@@ -37,6 +40,10 @@ class Question extends Component {
     var answers = [false, false, false, false, false];
     answers[answer] = bool;
     this.setState({user_answer: answers});
+  }
+
+  handleTimeout(){
+    this.setState({timeout: true});
   }
 
   sentAnswer(){
@@ -60,9 +67,19 @@ class Question extends Component {
       },
     };
     var status = null;
-    if (this.state.answered) {
-      status = [<Status className="col s6" correct={this.state.correct}/>, <RaisedButton label="下一題" className="col s3"onClick={this.componentDidMount.bind(this)} waves='light' />];
+    var timer = null;
+    if (this.state.answered || this.state.timeout) {
+      status = [<Status className="col s6" correct={this.state.correct} timeout={this.state.timeout} />, 
+                <Row end="xs">
+                  <RaisedButton label="下一題" className="col s3"onClick={this.componentDidMount.bind(this)} waves='light' />
+                </Row>];
     } 
+
+    if (!this.state.timeout){
+      timer =  <Col xs={4} sm={4} md={4} lg={4}>
+                  <Timecounter initialTimeRemaining={10000} completeCallback={ this.handleTimeout.bind(this) }  />
+               </Col>;
+    }
 
     return (
       <MuiThemeProvider muiTheme={getMuiTheme()}>
@@ -73,13 +90,16 @@ class Question extends Component {
             </Col>
             <Col xs={12} sm={6} md={6} lg={6}>
               <h2 >{question_element.question}</h2>
-              <Col xs={12} sm={12} md={12} lg={12}>
-                <Checkbox defaultChecked={this.state.user_answer[0]} onCheck={this.handleChange.bind(this, 0)} label={question_element.choices[0]} />
-                <Checkbox defaultChecked={this.state.user_answer[1]} onCheck={this.handleChange.bind(this, 1)} label={question_element.choices[1]} />
-                <Checkbox defaultChecked={this.state.user_answer[2]} onCheck={this.handleChange.bind(this, 2)} label={question_element.choices[2]} />
-                <Checkbox defaultChecked={this.state.user_answer[3]} onCheck={this.handleChange.bind(this, 3)} label={question_element.choices[3]} />
-                <Checkbox defaultChecked={this.state.user_answer[4]} onCheck={this.handleChange.bind(this, 4)} label={question_element.choices[4]} />
-              </Col>
+              <Row>
+                <Col xs={4} sm={4} md={4} lg={4}>
+                  <Checkbox defaultChecked={this.state.user_answer[0]} onCheck={this.handleChange.bind(this, 0)} label={question_element.choices[0]} />
+                  <Checkbox defaultChecked={this.state.user_answer[1]} onCheck={this.handleChange.bind(this, 1)} label={question_element.choices[1]} />
+                  <Checkbox defaultChecked={this.state.user_answer[2]} onCheck={this.handleChange.bind(this, 2)} label={question_element.choices[2]} />
+                  <Checkbox defaultChecked={this.state.user_answer[3]} onCheck={this.handleChange.bind(this, 3)} label={question_element.choices[3]} />
+                  <Checkbox defaultChecked={this.state.user_answer[4]} onCheck={this.handleChange.bind(this, 4)} label={question_element.choices[4]} />
+                </Col>
+              {timer}
+              </Row>
               <RaisedButton label="送出" onClick={this.sentAnswer.bind(this)} waves='light' />
               {status}
             </Col>
