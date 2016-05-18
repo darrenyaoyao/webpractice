@@ -1,5 +1,9 @@
 import React, { Component } from 'react';
-import {Button, Input} from 'react-materialize';
+import getMuiTheme from 'material-ui/styles/getMuiTheme';
+import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
+import {RaisedButton} from 'material-ui';
+import {Checkbox} from 'material-ui';
+import {Grid, Row, Col} from 'react-flexbox-grid';
 import Status from './Status';
 
 import './Question.css';
@@ -9,7 +13,7 @@ class Question extends Component {
     super(props, context);
     this.state = {
       question_element: {},
-      user_answer: null,
+      user_answer: [false, false, false, false, false],
       answered: false,
       correct: false
     };
@@ -28,14 +32,17 @@ class Question extends Component {
     }).then(this.setQuestion);
   }
 
-  handleClick(answer){
-    this.setState({user_answer: answer});
+  handleChange(answer, e, bool){
+    console.log(answer+"+"+bool);
+    var answers = [false, false, false, false, false];
+    answers[answer] = bool;
+    this.setState({user_answer: answers});
   }
 
   sentAnswer(){
     const {question_element, user_answer} = this.state;
     this.setState({answered: true});
-    if(user_answer == question_element.answer){
+    if(user_answer[question_element.answer]){
       this.setState({correct: true});
     }else{
       this.setState({correct: false});
@@ -44,31 +51,41 @@ class Question extends Component {
 
   render() {
     const question_element = this.state.question_element;
+    const styles = {
+      block: {
+        width: 100+'%'
+      },
+      checkbox: {
+        marginBottom: 16,
+      },
+    };
     var status = null;
     if (this.state.answered) {
-      status = [<Status className="col s6" correct={this.state.correct}/>, <Button className="col s3"onClick={this.componentDidMount.bind(this)} waves='light'>下一題</Button>];
+      status = [<Status className="col s6" correct={this.state.correct}/>, <RaisedButton label="下一題" className="col s3"onClick={this.componentDidMount.bind(this)} waves='light' />];
     } 
 
     return (
-      <div className="valign-wrapper">
-        <div className="row valign">
-          <div className="col s6">
-            <img className="col s12" src={"/public/"+question_element.img} />
-          </div>
-          <div className="col s6">
-            <h2 className="col s12">{question_element.question}</h2>
-            <div className="col s12">
-              <Input onClick={this.handleClick.bind(this, 0)} name='group1' type='radio' value='red' label={question_element.choices[0]} />
-              <Input onClick={this.handleClick.bind(this, 1)} name='group1' type='radio' value='yellow' label={question_element.choices[1]} />
-              <Input onClick={this.handleClick.bind(this, 2)} name='group1' type='radio' value='green' label={question_element.choices[2]}  />
-              <Input onClick={this.handleClick.bind(this, 3)} name='group1' type='radio' value='brown' label={question_element.choices[3]}  />
-              <Input onClick={this.handleClick.bind(this, 4)} name='group1' type='radio' value='brown' label={question_element.choices[4]}  />
-            </div>
-            <Button className="col s4 offset-s8" onClick={this.sentAnswer.bind(this)} waves='light'>送出</Button>
-            {status}
-          </div>
-        </div>
-      </div>
+      <MuiThemeProvider muiTheme={getMuiTheme()}>
+        <Grid>
+          <Row>
+            <Col xs={12} sm={6} md={6} lg={6}>
+              <img style={styles.block} src={"/public/"+question_element.img} />
+            </Col>
+            <Col xs={12} sm={6} md={6} lg={6}>
+              <h2 >{question_element.question}</h2>
+              <Col xs={12} sm={12} md={12} lg={12}>
+                <Checkbox defaultChecked={this.state.user_answer[0]} onCheck={this.handleChange.bind(this, 0)} label={question_element.choices[0]} />
+                <Checkbox defaultChecked={this.state.user_answer[1]} onCheck={this.handleChange.bind(this, 1)} label={question_element.choices[1]} />
+                <Checkbox defaultChecked={this.state.user_answer[2]} onCheck={this.handleChange.bind(this, 2)} label={question_element.choices[2]} />
+                <Checkbox defaultChecked={this.state.user_answer[3]} onCheck={this.handleChange.bind(this, 3)} label={question_element.choices[3]} />
+                <Checkbox defaultChecked={this.state.user_answer[4]} onCheck={this.handleChange.bind(this, 4)} label={question_element.choices[4]} />
+              </Col>
+              <RaisedButton label="送出" onClick={this.sentAnswer.bind(this)} waves='light' />
+              {status}
+            </Col>
+          </Row>
+        </Grid>
+      </MuiThemeProvider>
     );
   }
 }
