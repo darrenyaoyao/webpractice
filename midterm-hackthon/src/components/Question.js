@@ -18,6 +18,7 @@ class Question extends Component {
       answered: false,
       correct: false,
       timeout: false,
+      time: 10
     };
     this.setQuestion = this.setQuestion.bind(this);
   }
@@ -50,9 +51,9 @@ class Question extends Component {
     const {question_element, user_answer} = this.state;
     this.setState({answered: true});
     if(user_answer[question_element.answer]){
-      this.setState({correct: true});
+      this.setState({correct: true, timeout: false});
     }else{
-      this.setState({correct: false});
+      this.setState({correct: false, timeout: false});
     }
   }
 
@@ -76,8 +77,12 @@ class Question extends Component {
     } 
 
     if (!this.state.timeout){
-      timer =  <Col xs={4} sm={4} md={4} lg={4}>
-                  <Timecounter initialTimeRemaining={10000} completeCallback={ this.handleTimeout.bind(this) }  />
+      timer =  <Col xs={8} sm={8} md={8} lg={8}>
+                  <Row center="xs">
+                    <Col xs={4} sm={4} md={4} lg={4}>
+                      <Timecounter initialTimeRemaining={10000} completeCallback={ this.handleTimeout.bind(this) }  />
+                    </Col>
+                  </Row>
                </Col>;
     }
 
